@@ -21,7 +21,7 @@ for training in data['training'].unique():
     for date_start in train_base['waktu'].unique():
         date_base = train_base[train_base['waktu'] == date_start]
         table_1 = date_base[['training', 'trainer', 'waktu']].set_index('training')
-        table_1 = table_1.drop_duplicate(keep='first')
+        table_1 = table_1.drop_duplicates(keep='first')
         table_1 = table_1.transpose()
         table_2 = date_base[['peserta', 'dept', 'atasan', 'Post test', 'Kehadiran', 'Reason ketidakhadiran']]
         ts = pd.to_datetime(str(date_start))
