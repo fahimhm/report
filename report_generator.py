@@ -12,8 +12,12 @@ start = time.time()
 
 import re
 
+import openpyxl
+workbook = openpyxl.load_workbook("datasets/report_generator.xlsx")
+worksheet = workbook['Sheet1']
+
 for training in data['training'].unique():
-    train_base = data[data['training'] == training]
+    train_base = data[(data['training'] == training) & (data['Info Email'].isnull())]
     for date_start in train_base['waktu'].unique():
         date_base = train_base[train_base['waktu'] == date_start]
         table_1 = date_base[['training', 'trainer', 'waktu']].set_index('training')
@@ -51,6 +55,12 @@ for training in data['training'].unique():
         mail.HTMLBody = body1 + body2 + body5 + body3 + body4
         mail.Send()
         
+        # --update excel
+        for i in date_base.index:
+            mycell = worksheet.cell(row=(i+2), column=20)
+            mycell.value = 'done'
+        workbook.save("datasets/report_generator.xlsx")
+
         print("Report training " + training + "tanggal " + str(d) + " sudah terkirim.")
         
 end = time.time()
